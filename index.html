@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sretan imendan, Tamara! 🐾</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #ffd6e8, #d6f0ff, #fff5c2);
+    background-size: 400% 400%;
+    animation: bgShift 12s ease infinite;
+    overflow: hidden;
+    padding: 20px;
+  }
+
+  @keyframes bgShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .card {
+    background: white;
+    border-radius: 24px;
+    padding: 30px 25px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    position: relative;
+  }
+
+  h1 {
+    color: #ff4d8d;
+    font-size: 1.8em;
+    margin-bottom: 5px;
+  }
+
+  .subtitle {
+    color: #666;
+    font-size: 0.95em;
+    margin-bottom: 20px;
+  }
+
+  .scratch-wrapper {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    box-shadow: inset 0 0 0 3px #ffd6e8;
+  }
+
+  .prize {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff0f6, #eaf7ff);
+    padding: 15px;
+    text-align: center;
+  }
+
+  .prize .emoji {
+    font-size: 2.5em;
+    margin-bottom: 8px;
+  }
+
+  .prize p {
+    color: #444;
+    font-size: 1em;
+    line-height: 1.4;
+    font-weight: bold;
+  }
+
+  canvas {
+    position: absolute;
+    top: 0; left: 0;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .hint {
+    color: #999;
+    font-size: 0.85em;
+    margin-bottom: 15px;
+    min-height: 20px;
+  }
+
+  .reset-btn {
+    background: #ff4d8d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 0.9em;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s;
+  }
+
+  .reset-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .confetti {
+    position: fixed;
+    top: -10px;
+    font-size: 1.5em;
+    pointer-events: none;
+    animation: fall linear forwards;
+    z-index: 999;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(110vh) rotate(360deg);
+      opacity: 0.3;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>🎉 Sretan imendan, Tamara! 🎉</h1>
+  <p class="subtitle">Grebi ispod da otkriješ svoju sudbinu za danas 🐶✨</p>
+
+  <div class="scratch-wrapper" id="wrapper">
+    <div class="prize" id="prize"></div>
+    <canvas id="scratchCanvas"></canvas>
+  </div>
+
+  <p class="hint" id="hint">👆 Prijeđi prstom ili mišem preko srebrne površine</p>
+
+  <button class="reset-btn" onclick="resetCard()">🔄 Zagrebi ponovno</button>
+</div>
+
+<script>
+  const prizes = [
+    { emoji: "🐕‍🦺", text: "Danas imaš službenu dozvolu gladiti svakog psa kojeg vidiš na putu do posla. Da, i onog susjedovog koji te ne voli." },
+    { emoji: "📋", text: "Čestitamo! Osvojila si jedan (1) dan bez sastanaka koji je mogao biti mail. Iskoristi mudro." },
+    { emoji: "🐾", text: "Tvoja ljubav prema psima je toliko velika da bi i ti radije bila u zoološkom nego na poslu. Razumijemo te potpuno." },
+    { emoji: "🎂", text: "Sretan imendan! Vole te Martina i Danijela!" }
+  ];
+
+  const prize = prizes[Math.floor(Math.random() * prizes.length)];
+
+  function initCard() {
+    const prizeEl = document.getElementById('prize');
+    prizeEl.innerHTML = `<div class="emoji">${prize.emoji}</div><p>${prize.text}</p>`;
+
+    const wrapper = document.getElementById('wrapper');
+    const canvas = document.getElementById('scratchCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const w = wrapper.offsetWidth;
+    const h = wrapper.offsetHeight;
+    canvas.width = w;
+    canvas.height = h;
+
+    // Srebrna "grebalica" površina
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, '#cfd8e3');
+    grad.addColorStop(0.5, '#e8edf3');
+    grad.addColorStop(1, '#b8c4d1');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = '#8a97a8';
+    ctx.font = 'bold 20px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🐾 ZAGREBI OVDJE 🐾', w / 2, h / 2 - 10);
+    ctx.font = '14px sans-serif';
+    ctx.fillText('(ne, ne ovako kak psi grebu vrata)', w / 2, h / 2 + 15);
+
+    ctx.globalCompositeOperation = 'destination-out';
+
+    let isDrawing = false;
+    let scratchedPixels = 0;
+    const totalPixels = w * h;
+    let checkedOnce = false;
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function scratch(x, y) {
+      ctx.beginPath();
+      ctx.arc(x, y, 22, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function checkCompletion() {
+      if (checkedOnce) return;
+      const imageData = ctx.getImageData(0, 0, w, h).data;
+      let transparent = 0;
+      for (let i = 3; i < imageData.length; i += 4 * 20) {
+        if (imageData[i] === 0) transparent++;
+      }
+      const ratio = transparent / (imageData.length / (4 * 20));
+      if (ratio > 0.55) {
+        checkedOnce = true;
+        canvas.style.transition = 'opacity 0.6s';
+        canvas.style.opacity = '0';
+        setTimeout(() => { canvas.style.display = 'none'; }, 600);
+        document.getElementById('hint').textContent = '🎊 Otkriveno! Sretan ti imendan! 🎊';
+        launchConfetti();
+      }
+    }
+
+    function startScratch(e) {
+      isDrawing = true;
+      const pos = getPos(e);
+      scratch(pos.x, pos.y);
+    }
+    function moveScratch(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      scratch(pos.x, pos.y);
+      checkCompletion();
+    }
+    function endScratch() {
+      isDrawing = false;
+      checkCompletion();
+    }
+
+    canvas.addEventListener('mousedown', startScratch);
+    canvas.addEventListener('mousemove', moveScratch);
+    window.addEventListener('mouseup', endScratch);
+
+    canvas.addEventListener('touchstart', startScratch, { passive: true });
+    canvas.addEventListener('touchmove', moveScratch, { passive: false });
+    canvas.addEventListener('touchend', endScratch);
+  }
+
+  function resetCard() {
+    document.getElementById('hint').textContent = '👆 Prijeđi prstom ili mišem preko srebrne površine';
+    const canvas = document.getElementById('scratchCanvas');
+    canvas.style.display = 'block';
+    canvas.style.opacity = '1';
+    location.reload();
+  }
+
+  function launchConfetti() {
+    const emojis = ['🎉', '🐶', '🐾', '🎊', '💐', '🥳'];
+    for (let i = 0; i < 40; i++) {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = 'confetti';
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.animationDuration = (2 + Math.random() * 2) + 's';
+        el.style.fontSize = (1 + Math.random()) + 'em';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 4000);
+      }, i * 40);
+    }
+  }
+
+  initCard();
+</script>
+
+</body>
+</html>
