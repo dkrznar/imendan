@@ -148,14 +148,7 @@
 </div>
 
 <script>
-  const prizes = [
-    { emoji: "🐕‍🦺", text: "Danas imaš službenu dozvolu gladiti svakog psa kojeg vidiš na putu do posla. Da, i onog susjedovog koji te ne voli." },
-    { emoji: "📋", text: "Čestitamo! Osvojila si jedan (1) dan bez sastanaka koji je mogao biti mail. Iskoristi mudro." },
-    { emoji: "🐾", text: "Tvoja ljubav prema psima je toliko velika da bi i ti radije bila u zoološkom nego na poslu. Razumijemo te potpuno." },
-    { emoji: "🎂", text: "Sretan imendan! Vole te Martina i Danijela!" }
-  ];
-
-  const prize = prizes[Math.floor(Math.random() * prizes.length)];
+  const prize = { emoji: "🐾💐", text: "Sretan imendan! Vole te Martina i Danijela!" };
 
   function initCard() {
     const prizeEl = document.getElementById('prize');
